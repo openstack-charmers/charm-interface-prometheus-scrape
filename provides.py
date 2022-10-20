@@ -22,7 +22,6 @@ from charms.reactive import (
 from charmhelpers.core import hookenv
 
 import charmhelpers.contrib.network.ip as ch_net_ip
-import json
 
 
 class PrometheusScrapeProvides(Endpoint):
@@ -91,8 +90,8 @@ class PrometheusScrapeProvides(Endpoint):
             rel.to_publish.pop('prometheus_scrape_unit_address', None)
 
             if hookenv.is_leader():
-                jobs = json.loads(rel.to_publish_app['scrape_jobs'])
-                jobs.pop(job_name, None)
+                jobs = rel.to_publish_app['scrape_jobs']
+                jobs = [j for j in jobs if j['job_name'] != job_name]
                 rel.to_publish_app['scrape_jobs'] = jobs
 
             clear_flag(self.expand_name(
