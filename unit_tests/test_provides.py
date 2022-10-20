@@ -134,3 +134,28 @@ class TestPrometheusScrapeProvides(test_utils.PatchHelper):
             self.relation_mock.to_publish_app,
             expect_app
         )
+
+        # Test the cleanup of the customized jobs as well.
+        self.ep.clear_job('somename')
+
+        expect_app_cleared = {
+            'scrape_jobs': [],
+            'scrape_metadata': {
+                'application': 'myapp',
+                'model': 'mymodel',
+                'model_uuid': '47bfebeb-92ee-4cfa-b768-cd29749d33ac'
+            },
+        }
+
+        self.assertEqual(
+            self.relation_mock.to_publish_raw,
+            expect_unit
+        )
+        self.assertEqual(
+            self.relation_mock.to_publish,
+            {}
+        )
+        self.assertEqual(
+            self.relation_mock.to_publish_app,
+            expect_app_cleared
+        )
